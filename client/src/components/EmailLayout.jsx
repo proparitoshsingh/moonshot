@@ -2,18 +2,31 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import EmailList from './EmailList';
 import EmailDetails from './EmailDetails';
+import { useLocation } from 'react-router-dom';
 
 const EmailLayout = () => {
    const [isSelected, setIsSelected] = useState(false);
+   const [selectedEmail, setSelectedEmail] = useState({});
+   const [activeFilter, setActiveFilter] = useState('');
 
+   const handleFilterClick = (filter) =>{
+      console.log("Gotta handle filter - ",filter);
+   };
 
+   const location = useLocation();
    return (
-      <StyledWrapper>
-         <EmailList setIsSelected={setIsSelected} />
-         {isSelected && (
-            <EmailDetails />
-         )}
-      </StyledWrapper>
+      <div>
+         <StyledFilters className="filter-bar">
+            <span>Filter By: </span>
+            <button className={activeFilter === 'unread' ? 'active' : ''} onClick={() => handleFilterClick('unread')}>Unread</button>
+            <button className={activeFilter === 'read' ? 'active' : ''} onClick={() => handleFilterClick('read')}>Read</button>
+            <button className={activeFilter === 'favorites' ? 'active' : ''} onClick={() => handleFilterClick('favorites')}>Favorites</button>
+         </StyledFilters>
+         <StyledWrapper>
+            <EmailList isSelected={isSelected} setIsSelected={setIsSelected} setSelectedEmail={setSelectedEmail} />
+            {isSelected && location.pathname.includes('/email/') && <EmailDetails selectedEmail={selectedEmail} />}
+         </StyledWrapper>
+      </div>
    );
 };
 
@@ -21,18 +34,55 @@ const StyledWrapper = styled.div`
    display: flex;
    flex-direction: row;
    justify-content: space-between;
-   max-width: 80vw;
-   margin: 0 auto;
-   height: 100vh;
-
+   max-width: 100vw;
+   margin-top:2vh;
    @media (max-width: 768px) {
       flex-direction: column;
       height: auto;
    }
 
-   & > div:nth-child(2) {
-      display: ${props => (props.isSelected ? 'block' : 'none')};
+   & > div {
       flex-grow: 1;
+   }
+`;
+
+const StyledFilters = styled.div`
+   display: flex;
+   align-items: center;
+   margin-top: 4vh;
+   margin-left: 2vw;
+
+   
+   span {
+      font-weight: 500;
+      margin-right: 12px;
+   }
+
+   button {
+      background: transparent;
+      color: #636363;
+      border: none;
+      padding: 8px 16px;
+      margin-right: 8px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s, color 0.3s;
+
+      &:hover {
+         background-color: #e1e4ea;
+         border: 1px solid #cfd2dc;
+      }
+
+      &.active {
+         background: #e0e0e0;
+         color: #000;
+         border: 1px solid #aaa;
+      }
+
+      &:last-child {
+         margin-right: 0;
+      }
    }
 `;
 
