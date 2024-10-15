@@ -1,19 +1,39 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-const EmailItem = ({ email, onClick, isSelected }) => {
+const EmailItem = ({ email, onClick, isFavorite, isSelected }) => {
+   const [isRead, setIsRead] = useState(false);
+
    const { from, subject, short_description, date, id } = email;
    const avatar = from.name.charAt(0).toUpperCase();
-   
+
+   useEffect(() => {
+      const readEmails = JSON.parse(sessionStorage.getItem('readEmails')) || [];
+      setIsRead(readEmails.includes(id));
+   }, [email]);
+
+   const handleClick = () => {
+      const readEmails = JSON.parse(sessionStorage.getItem('readEmails')) || [];
+      if (!readEmails.includes(id)) {
+         readEmails.push(id);
+         sessionStorage.setItem('readEmails', JSON.stringify(readEmails));
+         setIsRead(true);
+      }
+      onClick();
+   }
 
    return (
-      <StyledEmailItem onClick={onClick}>
+      <StyledEmailItem onClick={handleClick} isRead={isRead} isSelected={isSelected} >
          <div className="email-avatar">{avatar}</div>
          <div className="email-details">
             <p className="email-from">From: <span className="bold-text">{`${from.name} <${from.email}>`}</span></p>
             <p className="email-subject">Subject: <span className="bold-text">{subject}</span></p>
             <p className="email-description">{short_description}</p>
-            <p className="email-date">
-               {new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true, })}
-            </p>
+            <div className="email-footer">
+               <p className="email-date">
+                  {new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
+               </p>
+               {isFavorite && <span className="favorite-label">Favorite</span>}
+            </div>
          </div>
       </StyledEmailItem>
    );
@@ -25,11 +45,11 @@ const StyledEmailItem = styled.li`
    align-items: flex-start;
    padding: 1rem;
    margin-bottom: 2vh;
-   border: 2px solid #cfd2dc;
+   border: 2px solid ${({isSelected}) => (isSelected ? '#e54065' : '#cfd2dc')};
    cursor: pointer;
    color: #636363;
    transition: background-color 0.3s ease, width 0.3s ease;
-   
+
    border-radius: 5px;
    max-width: 90vw;
    overflow: hidden;
@@ -37,6 +57,8 @@ const StyledEmailItem = styled.li`
    &:hover {
       background-color: #f2f2f2;
    }
+
+   background-color: ${({ isRead }) => (isRead ? '#f2f2f2' : '#fff')};
 
    .email-avatar {
       width: 50px;
@@ -76,9 +98,22 @@ const StyledEmailItem = styled.li`
          text-overflow: ellipsis;
       }
 
-      .email-date {
-         font-size: 0.85rem;
-         color: #999;
+      .email-footer {
+         display: flex;
+         justify-content: start;
+         align-items: center;
+
+         .email-date {
+            font-size: 0.85rem;
+            color: #999;
+         }
+
+         .favorite-label {
+            font-size: 0.85rem;
+            color: #e54065;
+            font-weight: bold;
+            margin-left: 2rem;
+         }
       }
    }
 

@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-const EmailDetails = ({ selectedEmail }) => {
+const EmailDetails = ({ selectedEmail, updateFavorites }) => {
    const { id } = useParams();
    const [emailDetails, setEmailDetails] = useState(null);
    const [loading, setLoading] = useState(true);
+   const [isFavorite, setIsFavorite] = useState(false);
 
    const avatar = selectedEmail.from.name.charAt(0).toUpperCase();
 
@@ -24,12 +25,19 @@ const EmailDetails = ({ selectedEmail }) => {
    };
 
    useEffect(() => {
+      const favorites = JSON.parse(sessionStorage.getItem('favorites')) || [];
+      setIsFavorite(favorites.includes(id));
+   }, [selectedEmail]);
+
+   const handleFavoriteClick = () => {
+      updateFavorites(id);
+      setIsFavorite(!isFavorite);
+   };
+
+   useEffect(() => {
       fetchEmailDetails();
    }, [id]);
 
-   const handleFavoriteClick = () => {
-      console.log(`Marked email ${id} as favorite`);
-   };
 
    if (loading) {
       return <p>Loading email details...</p>;
@@ -45,11 +53,11 @@ const EmailDetails = ({ selectedEmail }) => {
                <div className="email-info">
                   <h2 className="email-subject">{subject}</h2>
                   <p className="email-date">
-                     { new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
+                     {new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
                   </p>
                </div>
                <button className="favorite-btn" onClick={handleFavoriteClick}>
-                  Mark as Favorite
+                  {isFavorite ? 'Remove as Favorite' : 'Mark as Favorite'}
                </button>
             </div>
             <div className="email-body" dangerouslySetInnerHTML={{ __html: emailDetails.body }} /> {/* can santize this before using but i think we r safe here */}
@@ -112,7 +120,7 @@ const StyledEmailDetails = styled.div`
          color: #888;
       }
 
-      
+
       .favorite-btn {
          background-color: #e54065;
          color: white;
