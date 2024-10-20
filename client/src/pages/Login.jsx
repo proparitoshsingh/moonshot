@@ -17,7 +17,7 @@ const Login = ({ setIsAuthenticated }) => {
       e.preventDefault();
       setError('');
       try {
-         const response = await axios.post('http://localhost:3000/auth/login', { username, password }, { withCredentials: true });
+         const response = await axios.post('https://moonshot-server-22o2c06xo-proparitoshsinghs-projects.vercel.app/auth/login', { username, password }, { withCredentials: true });
          console.log(response.data.message);
          localStorage.setItem('token', response.data.token);
          setIsAuthenticated(true);

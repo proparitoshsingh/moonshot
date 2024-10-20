@@ -10,7 +10,7 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
 
    const handleLogout = async () => {
       setIsAuthenticated(false);
-      const response = await axios.post('http://localhost:3000/auth/logout', { withCredentials: true });
+      const response = await axios.post('https://moonshot-server-22o2c06xo-proparitoshsinghs-projects.vercel.app/auth/logout', { withCredentials: true });
       localStorage.removeItem('token');
       console.log(response.data.message);
       navigate('/login');

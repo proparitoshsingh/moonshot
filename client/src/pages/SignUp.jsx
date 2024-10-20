@@ -27,7 +27,7 @@ const Signup = () => {
          return;
       }
       try {
-         const response = await axios.post('http://localhost:3000/auth/signup', { email, username, password }, { withCredentials: true });
+         const response = await axios.post('https://moonshot-server-22o2c06xo-proparitoshsinghs-projects.vercel.app/auth/signup', { email, username, password }, { withCredentials: true });
          console.log(response.data.message);
          navigate('/login');
       } catch (error) {

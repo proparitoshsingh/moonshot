@@ -21,7 +21,7 @@ const FilterSection = ({
 
    const resetPreferences = async () => {
       try {
-         await axios.delete('http://localhost:3000/api/preferences', { withCredentials: true });
+         await axios.delete('https://moonshot-server-22o2c06xo-proparitoshsinghs-projects.vercel.app/api/preferences', { withCredentials: true });
       } catch (error) {
          console.error('Error clearing preferences:', error);
       }

@@ -50,7 +50,7 @@ const Dashboard = () => {
 
    const fetchData = async (filters = {}) => {
       try {
-         const response = await axios.get('http://localhost:3000/api/data', { params: filters, withCredentials: true });
+         const response = await axios.get('https://moonshot-server-22o2c06xo-proparitoshsinghs-projects.vercel.app/api/data', { params: filters, withCredentials: true });
          return response.data;
       } catch (error) {
          console.error('Error fetching data:', error);
@@ -59,7 +59,7 @@ const Dashboard = () => {
 
    const savePreferences = async (preferences) => {
       try {
-         await axios.post('http://localhost:3000/api/preferences', preferences, { withCredentials: true });
+         await axios.post('https://moonshot-server-22o2c06xo-proparitoshsinghs-projects.vercel.app/api/preferences', preferences, { withCredentials: true });
          console.log('Preferences saved: ', preferences);
       } catch (error) {
          console.error('Error saving preferences:', error);
@@ -68,7 +68,7 @@ const Dashboard = () => {
 
    const loadPreferences = async () => {
       try {
-         const response = await axios.get('http://localhost:3000/api/preferences', { withCredentials: true });
+         const response = await axios.get('https://moonshot-server-22o2c06xo-proparitoshsinghs-projects.vercel.app/api/preferences', { withCredentials: true });
          return response.data.preferences;
       } catch (error) {
          console.error('Error loading preferences:', error);
@@ -160,7 +160,7 @@ const Dashboard = () => {
             Object.entries(filters).filter((entry) => entry[1] !== null)
          );
 
-         const response = await axios.get('http://localhost:3000/api/category', { params: filterQuery, withCredentials: true });
+         const response = await axios.get('https://moonshot-server-22o2c06xo-proparitoshsinghs-projects.vercel.app/api/category', { params: filterQuery, withCredentials: true });
          if (response.data.success) {
             const { time, values } = response.data.data;
             setLineChartData({

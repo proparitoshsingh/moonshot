@@ -10,7 +10,7 @@ const {logger}  = require('./middlewares/loggerMiddleware');
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors({
-   origin: 'http://localhost:5173',
+   origin: '*',
    credentials: true,
 }));
 app.use(express.json());
