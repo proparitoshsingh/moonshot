@@ -79,7 +79,8 @@ const fetchCategoryData = async (req, res) => {
       const timeData = [];
 
       for (const row of rows) {
-         const rowDate = new Date(row[0]);
+         const dateParts = row[0].split('/'); 
+         const rowDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
 
          if (isNaN(rowDate.getTime())) {
             continue;
@@ -98,7 +99,7 @@ const fetchCategoryData = async (req, res) => {
       }
 
       timeData.sort((a, b) => a.date - b.date);
-      const time = timeData.map(item => item.date.toISOString().split('T')[0]); 
+      const time = timeData.map(item => item.date.toISOString().split('T')[0]);
       const values = timeData.map(item => item.value);
 
       res.json({ success: true, data: { time, values } });
