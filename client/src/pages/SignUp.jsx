@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Signup = () => {
    const [username, setUsername] = useState('');
+   const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const [confirmPassword, setConfirmPassword] = useState('');
    const [error, setError] = useState('');
+   const navigate = useNavigate();
 
    const handleConfirmPasswordChange = (e) => {
       const confirmPasswordValue = e.target.value;
@@ -17,16 +21,19 @@ const Signup = () => {
       }
    };
 
-   const handleSubmit = (e) => {
+   const handleSubmit = async (e) => {
       e.preventDefault();
       if (error) {
          return;
       }
-
-      // i ll write the signup logic here
-      console.log('Username:', username);
-      console.log('Password:', password);
-      console.log('Confirm Password:', confirmPassword);
+      try {
+         const response = await axios.post('http://localhost:3000/auth/signup', { email, username, password }, { withCredentials: true });
+         console.log(response.data.message);
+         navigate('/login');
+      } catch (error) {
+         console.error('Error signing up : ', error);
+         setError('Failed to sign up. Please try again.');
+      }
    };
 
    return (
@@ -34,6 +41,15 @@ const Signup = () => {
          <div className="card">
             <h2>Sign Up</h2>
             <form onSubmit={handleSubmit}>
+               <label htmlFor="email">Email:</label>
+               <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+               />
                <label htmlFor="username">Username:</label>
                <input
                   type="text"

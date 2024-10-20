@@ -1,15 +1,31 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
    const [username, setUsername] = useState('');
    const [password, setPassword] = useState('');
+   const [error, setError] = useState('');
+   const navigate = useNavigate();
 
-   const handleSubmit = (e) => {
+   const handleToggle = () => {
+      navigate('/signup');
+   };
+
+   const handleSubmit = async (e) => {
       e.preventDefault();
-      // I'll write my login logic here
-      console.log('Username:', username);
-      console.log('Password:', password);
+      setError('');
+      try {
+         const response = await axios.post('http://localhost:3000/auth/login', { username, password }, { withCredentials: true });
+         console.log(response.data.message);
+         localStorage.setItem('token', response.data.token);
+         setIsAuthenticated(true);
+         navigate('/dashboard');
+      } catch (error) {
+         console.error('Error signing up : ', error);
+         setError('Failed to sign up. Please try again.');
+      }
    };
 
    return (
@@ -17,6 +33,7 @@ const Login = () => {
          <div className="card">
             <h2>Login</h2>
             <form onSubmit={handleSubmit}>
+               {error && <ErrorMessage>{error}</ErrorMessage>}
                <label htmlFor="username">Username:</label>
                <input
                   type="username"
@@ -37,12 +54,18 @@ const Login = () => {
                />
                <button type="submit">Login</button>
             </form>
-            <button className="toggle-btn" type="button">{`Don't have an account? Sign up`}</button>
+            <button className="toggle-btn" type="button" onClick={handleToggle}>{`Don't have an account? Sign up`}</button>
          </div>
       </Wrapper>
    );
 };
 
+const ErrorMessage = styled.div`
+   color: red;
+   font-size: 14px;
+   margin-bottom: 15px;
+   text-align: left;
+`;
 
 const Wrapper = styled.div`
    display: flex;
